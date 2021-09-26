@@ -12,8 +12,12 @@ public class Menu {
         System.out.println("ls_name_asc - 제목순 정렬");
         System.out.println("ls_name_desc - 제목역순 정렬");
         System.out.println("ls_date - 날짜순 정렬");
+        System.out.println("ls_date_desc - 날짜역순 정렬");
+        System.out.println("ls_cate - 현재 등록된 카테고리 출력(중복 없음)");
+        System.out.println("find <keyword> - 해당 키워드를 포함하고 있는 모든 항목 출력");
+        System.out.println("find_cate <keyword> - 해당 카테고리 키워드를 포함하고 있는 모든 항목 출력");
+        System.out.println("ls - 전체 목록");
         System.out.println("exit - 종료");
-        System.out.println("Enter your choice >");
     }
     
     public static void prompt() {
