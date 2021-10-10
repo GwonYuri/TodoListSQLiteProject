@@ -13,12 +13,12 @@ import com.todo.service.TodoSortByName;
 import com.todo.service.DbConnect;
 
 public class TodoList {
-	private List<TodoItem> list;
 	Connection conn;
+	private List<TodoItem> list;
 	
 	public TodoList() {
-		this.list = new ArrayList<TodoItem>();
 		this.conn = DbConnect.getConnection();
+		this.list = new ArrayList<TodoItem>();
 	}
 
 	//특정 파일 이름의 txt파일 읽어오기
@@ -195,7 +195,7 @@ public class TodoList {
 		keyword = "%"+keyword+"%";
 		
 		try {
-			String sql = "SELECT * FROM list WHERE titie like ? or memo like?";
+			String sql = "SELECT * FROM list WHERE title like ? or memo like?";
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1,keyword);
 			pstmt.setString(2,keyword);
