@@ -11,7 +11,7 @@ public class TodoItem {
     private String due_date;
     private String current_date;
     
-    public TodoItem(String category, String title, String desc, String due_date){
+    public TodoItem(String title, String desc, String category,String due_date){
     	this.category=category;
     	this.title=title;
         this.desc=desc;
@@ -20,7 +20,7 @@ public class TodoItem {
         this.current_date = f.format(new Date());
     } //Constructor1
     
-    public TodoItem(String category, String title, String desc, String due_date, String current_date) {
+    public TodoItem (String title, String desc, String category, String due_date, String current_date) {
     	this.category = category;
     	this.title = title;
 		this.desc = desc;
@@ -28,7 +28,7 @@ public class TodoItem {
 		this.current_date = current_date;
 	} //Constructor2
     
-    public TodoItem(int id, String category, String title, String desc, String due_date, String current_date) {
+    public TodoItem(int id, String title, String desc,String category, String due_date, String current_date) {
 		this.id = id;
 		this.category = category;
 		this.title = title;

@@ -35,7 +35,7 @@ public class TodoUtil {
 		System.out.print("마감일 > ");
 		due_date = sc.nextLine().trim(); 
 		
-		TodoItem t = new TodoItem(category, title, desc, due_date);
+		TodoItem t = new TodoItem(title, desc, category, due_date);
 		if(list.addItem(t) > 0) {
 			System.out.println("항목이 추가되었습니다.");
 		}
@@ -76,7 +76,7 @@ public class TodoUtil {
 		System.out.print("새로운 마감일 > ");
 		String new_duedate = sc.nextLine().trim(); 
 		
-		TodoItem t = new TodoItem(new_category, new_title, new_description, new_duedate);
+		TodoItem t = new TodoItem(new_title, new_description, new_category, new_duedate);
 		t.setId(upd_num);
 		if(l.updateItem(t) > 0)
 			System.out.println("항목이 수정되었습니다.");
@@ -111,7 +111,7 @@ public class TodoUtil {
 					String due_date = st.nextToken();
 					String current_date = st.nextToken();
 					
-					TodoItem i = new TodoItem(category, title, desc, due_date,current_date);
+					TodoItem i = new TodoItem(title, desc, category, due_date);
 					l.addItem(i);
 					count++;
 				}
@@ -126,7 +126,7 @@ public class TodoUtil {
 	}
 
 	public static void listAll(TodoList l) {
-		System.out.printf("[전체 목록], 총 %d개]\n", l.getCount());
+		System.out.printf("[전체 목록], 총 %d개\n", l.getCount());
 		for (TodoItem item : l.getList()) {
 			System.out.println(item.toString());
  		}
@@ -134,7 +134,7 @@ public class TodoUtil {
 	
 	
 	public static void listAll(TodoList l, String orderby, int ordering) {
-		System.out.printf("[전체 목록], 총 %d개\\n", l.getCount());
+		System.out.printf("[전체 목록], 총 %d개\n", l.getCount());
 		for(TodoItem item : l.getOrderedList(orderby, ordering)) {
 			System.out.println(item.toString());
 		}

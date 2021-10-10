@@ -37,7 +37,7 @@ public class TodoMain {
 				TodoUtil.listAll(l);
 				break;
 
-			case "ls_name_asc":
+			case "ls_name":
 				// 오름차순 정렬
 				System.out.println("제목순으로 정렬하였습니다.");
 				TodoUtil.listAll(l, "title", 1);
