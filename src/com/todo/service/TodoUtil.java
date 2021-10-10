@@ -36,7 +36,7 @@ public class TodoUtil {
 		due_date = sc.nextLine().trim(); 
 		
 		TodoItem t = new TodoItem(category, title, desc, due_date);
-		list.addItem(t);
+		if(list.addItem(t) > 0) {
 		System.out.println("항목이 추가되었습니다.");
 	}
 
@@ -47,14 +47,8 @@ public class TodoUtil {
 		System.out.print("[항목 삭제]\n" + "삭제할 항목 번호 > ");
 		int del_num = sc.nextInt();
 		
-		for (TodoItem item : l.getList()) {
-			if (del_num == l.indexOf(item)+1) {
-				System.out.println(l.indexOf(item)+1 + "." + item.toString());
-				l.deleteItem(item);
-				System.out.println("항목이 삭제되었습니다.");
-				break;
-			}
-		}
+		if(l.deleteItem(del_num) > 0)
+			System.out.println("항목이 삭제되었습니다.");
 	}
 
 	public static void updateItem(TodoList l) {
@@ -81,15 +75,11 @@ public class TodoUtil {
 		System.out.print("새로운 마감일 > ");
 		String new_duedate = sc.nextLine().trim(); 
 		
-		for (TodoItem item : l.getList()) {
-			if(upd_num == l.indexOf(item) + 1) {
-				l.deleteItem(item);
-				TodoItem t = new TodoItem(new_category, new_title, new_description, new_duedate);
-				l.addItem(t);
-				System.out.println("항목이 수정되었습니다.");
-				break;
-			}
-		}
+		TodoItem t = new TodoItem(new_category, new_title, new_description, new_duedate);
+		t.setId(upd_num);
+		if(l.updateItem(t) > 0)
+			System.out.println("항목이 수정되었습니다.");
+		
 	}
 	
 	public static void saveList(TodoList l, String filename) {
@@ -134,18 +124,20 @@ public class TodoUtil {
 			}
 	}
 
-	public static void listAll(TodoList l) {
-		System.out.println("[전체 목록], 총 " +l.getList().size()+"개]");
-		for (TodoItem item : l.getList()) {
-			System.out.println(l.indexOf(item)+1 + "." + item.toString());
+	public static void listAll(TodoList l, String orderby, int ordering) {
+		System.out.printf("[전체 목록], 총 %d개\\n", l.getCount());
+		for(TodoItem item : l.getOrderedList(orderby, ordering)) {
+			System.out.println(item.toString());
 		}
 	}
 	
-	public static void find(TodoList l, String keyward) {
+	
+	public static void find(TodoList l, String keyword) {
 		int count = 0;
 		for(TodoItem i : l.getList()) {
-			if(i.getTitle().contains(keyward) || i.getDesc().contains(keyward)) {
-				System.out.println(l.indexOf(i)+1 + "." + i.toString());
+			String line = i.toString();
+			if(line.contains(keyword)) {
+				System.out.println(i.toString());
 				count++;
 			}
 		}
@@ -154,11 +146,9 @@ public class TodoUtil {
 	
 	public static void findByCategory(TodoList l, String cate_keyward) {
 		int count = 0;
-		for(TodoItem i : l.getList()) {
-			if(i.getCategory().contains(cate_keyward)) {
-				System.out.println(l.indexOf(i)+1 + "." + i.toString());
-				count++;
-			}
+		for(TodoItem item : l.getListCategory(cate_keyward)) {
+			System.out.println(item.toString());
+			count++;
 		}
 		System.out.println("총 " + count + "개의 항목을 찾았습니다.");
 	}

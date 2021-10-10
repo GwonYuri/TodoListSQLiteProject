@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class TodoItem {
+	private int id;
     private String title;
     private String desc;
     private String current_date;
@@ -27,7 +28,24 @@ public class TodoItem {
 		this.current_date = current_date;
 	} //Constructor2
     
-    public String getCategory() {
+    public TodoItem(int id, String category, String title, String desc, String due_date, String current_date) {
+		this.id = id;
+		this.category = category;
+		this.title = title;
+		this.desc = desc;
+		this.due_date = due_date;
+		this.current_date = current_date;
+	}
+    
+    public int getId() {
+		return id;
+	}
+    
+    public void setId(int id) {
+		this.id = id;
+	}
+
+	public String getCategory() {
 		return category;
 	}
 

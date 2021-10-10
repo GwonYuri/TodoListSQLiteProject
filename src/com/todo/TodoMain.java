@@ -11,10 +11,11 @@ public class TodoMain {
 	
 		Scanner sc = new Scanner(System.in);
 		TodoList l = new TodoList();
+		
 		boolean isList = false;
 		boolean quit = false;
 		
-		TodoUtil.loadList(l,"todolist.txt");
+		l.importData("todolist.txt");
 		
 		Menu.displaymenu();
 		do {
@@ -40,28 +41,25 @@ public class TodoMain {
 				break;
 
 			case "ls_name_asc":
-				l.sortByName(); // 오름차순 정렬
+				// 오름차순 정렬
 				System.out.println("제목순으로 정렬하였습니다.");
-				isList = true;
+				TodoUtil.listAll(l, "title", 1);
 				break;
 
 			case "ls_name_desc":
-				l.sortByName();  //오름차순 정렬
-				l.reverseList(); //역정렬 => 내림차순 정렬
+				//내림차순 정렬
 				System.out.println("제목역순으로 정렬하였습니다.");
-				isList = true;
+				TodoUtil.listAll(l, "title", 0);
 				break;
 				
 			case "ls_date":
-				l.sortByDate();
 				System.out.println("날짜순으로 정렬하였습니다.");
-				isList = true;
+				TodoUtil.listAll(l, "due_date", 1);
 				break;
 				
 			case "ls_date_desc":
-				l.sortByDate();
-				l.reverseList();
-				isList = true;
+				System.out.println("날짜역순으로 정렬하였습니다.");
+				TodoUtil.listAll(l, "due_date", 0);
 				break;
 				
 			case "ls_cate" :
