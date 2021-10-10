@@ -37,7 +37,8 @@ public class TodoUtil {
 		
 		TodoItem t = new TodoItem(category, title, desc, due_date);
 		if(list.addItem(t) > 0) {
-		System.out.println("항목이 추가되었습니다.");
+			System.out.println("항목이 추가되었습니다.");
+		}
 	}
 
 	public static void deleteItem(TodoList l) {
@@ -124,6 +125,14 @@ public class TodoUtil {
 			}
 	}
 
+	public static void listAll(TodoList l) {
+		System.out.printf("[전체 목록], 총 %d개]\n", l.getCount());
+		for (TodoItem item : l.getList()) {
+			System.out.println(item.toString());
+ 		}
+ 	}
+	
+	
 	public static void listAll(TodoList l, String orderby, int ordering) {
 		System.out.printf("[전체 목록], 총 %d개\\n", l.getCount());
 		for(TodoItem item : l.getOrderedList(orderby, ordering)) {
@@ -134,12 +143,9 @@ public class TodoUtil {
 	
 	public static void find(TodoList l, String keyword) {
 		int count = 0;
-		for(TodoItem i : l.getList()) {
-			String line = i.toString();
-			if(line.contains(keyword)) {
-				System.out.println(i.toString());
-				count++;
-			}
+		for(TodoItem i : l.getList(keyword)) {
+			System.out.println(i.toString());
+			count++;
 		}
 		System.out.println("총 " + count + "개의 항목을 찾았습니다.");
 	}
@@ -154,13 +160,17 @@ public class TodoUtil {
 	}
 	
 	public static void sortByCategory(TodoList l) {
-		HashSet<String> cate = new HashSet<String>();
-
-		for(TodoItem i : l.getList()) {
-			cate.add(i.getCategory());
-		}
+		int count=0;
 		
-		System.out.println(String.join(" / ", cate));
-		System.out.println("총 " + cate.size() + "개의 카테고리가 등록되어 있습니다.");
+		for(String item : l.getCategories()) {
+			System.out.print(item+" ");
+			count++;
+		}
+//		for(TodoItem i : l.getList()) {
+//			cate.add(i.getCategory());
+//		}
+//		
+//		System.out.println(String.join(" / ", cate));
+		System.out.printf("\n총 %d개의 카테고리가 등록되어 있습니다.\n",count);
 	}
 }

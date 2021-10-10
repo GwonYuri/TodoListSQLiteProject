@@ -5,11 +5,11 @@ import java.util.Date;
 
 public class TodoItem {
 	private int id;
+	private String category;
     private String title;
     private String desc;
-    private String current_date;
-    private String category;
     private String due_date;
+    private String current_date;
     
     public TodoItem(String category, String title, String desc, String due_date){
     	this.category=category;
@@ -35,7 +35,7 @@ public class TodoItem {
 		this.desc = desc;
 		this.due_date = due_date;
 		this.current_date = current_date;
-	}
+	} //Constructor3
     
     public int getId() {
 		return id;
@@ -87,8 +87,7 @@ public class TodoItem {
 
 	@Override
     public String toString() {
-    	return "  [" + category + "]" + "[" + title + "]" + "[" + desc + "]" + " - " + due_date +
-    			" - " + current_date;
+		return String.format("%d [%s] %s - %s - %s - %s", id, category, title, desc, due_date, current_date);
     }
     
     public String toSaveString() {

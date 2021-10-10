@@ -12,7 +12,6 @@ public class TodoMain {
 		Scanner sc = new Scanner(System.in);
 		TodoList l = new TodoList();
 		
-		boolean isList = false;
 		boolean quit = false;
 		
 		l.importData("todolist.txt");
@@ -20,10 +19,8 @@ public class TodoMain {
 		Menu.displaymenu();
 		do {
 			Menu.prompt();
-			isList = false;
 			String choice = sc.next();
 			switch (choice) {
-
 			case "add":
 				TodoUtil.createItem(l);
 				break;
@@ -88,8 +85,6 @@ public class TodoMain {
 				System.out.println("정확한 명령어를 입력하세요. [도움말 보기 >> help 입력]");
 				break;
 			}
-	
-			if(isList) TodoUtil.listAll(l); // 정렬후에는 항목 리스트 보여주기
 		} while (!quit); // quit가 true일때 while문 종료
 		TodoUtil.saveList(l, "todolist.txt");
 	}

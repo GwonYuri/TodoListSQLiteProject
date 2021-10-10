@@ -10,14 +10,15 @@ import java.sql.Statement;
 import java.util.*;
 import com.todo.service.TodoSortByDate;
 import com.todo.service.TodoSortByName;
+import com.todo.service.DbConnect;
 
 public class TodoList {
 	private List<TodoItem> list;
 	Connection conn;
 	
 	public TodoList() {
-		this.conn = DbConnect.getConnection();
 		this.list = new ArrayList<TodoItem>();
+		this.conn = DbConnect.getConnection();
 	}
 
 	//특정 파일 이름의 txt파일 읽어오기
@@ -54,10 +55,8 @@ public class TodoList {
 		}
 	}
 	
-	// Create
 	public int addItem(TodoItem t) {
-		String sql = "insert into list (title, memo, category, current_date, due_date)" 
-				+"values (?,?,?,?,?);";
+		String sql = "insert into list (title, memo, category, current_date, due_date)" +"values (?,?,?,?,?);";
 		PreparedStatement pstmt;
 		
 		int count = 0;
@@ -67,7 +66,7 @@ public class TodoList {
 			pstmt.setString(2, t.getDesc());
 			pstmt.setString(3, t.getCategory());
 			pstmt.setString(4, t.getCurrent_date());
-			pstmt.setString(5, t.getDueDate());
+			pstmt.setString(5, t.getDue_date());
 			
 			count = pstmt.executeUpdate();
 			pstmt.close();
@@ -76,10 +75,11 @@ public class TodoList {
 		}
 		return count;
 	}
-
+	
 	public int deleteItem(int index) {
 		String sql = "delete from list where id=?;";
 		PreparedStatement pstmt;
+		
 		int count = 0;
 		try {
 			pstmt = conn.prepareStatement(sql);
@@ -103,7 +103,7 @@ public class TodoList {
 			pstmt.setString(2,t.getDesc());
 			pstmt.setString(3,t.getCategory());
 			pstmt.setString(4,t.getCurrent_date());
-			pstmt.setString(5,t.getDueDate());
+			pstmt.setString(5,t.getDue_date());
 			pstmt.setInt(6, t.getId());
 			
 			count = pstmt.executeUpdate();
@@ -144,27 +144,6 @@ public class TodoList {
 		return false;
 	}
 	
-	public ArrayList<TodoItem> getList() {
-		ArrayList<TodoItem> list = new ArrayList<TodoItem>();
-		Statement stmt;
-		
-		try {
-			stmt = conn.createStatement();
-			String sql = "SELECT * FROM list";
-			ResultSet rs = stmt.executeQuery(sql);
-			
-			while (rs.next()) {
-				list.add(new TodoItem(rs.getInt("id"), rs.getString("category"), rs.getString("title"),
-						rs.getString("memo"), rs.getString("due_date"), rs.getString("current_date")));
-			}
-
-			stmt.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return list;
-	}
-	
 	public int getCount() {
 		Statement stmt;
 		
@@ -180,6 +159,66 @@ public class TodoList {
 			e.printStackTrace();
 		}
 		return count;
+	}
+	
+	public ArrayList<TodoItem> getList() {
+		ArrayList<TodoItem> list = new ArrayList<TodoItem>();
+		Statement stmt;
+		
+		try {
+			stmt = conn.createStatement();
+			String sql = "SELECT * FROM list";
+			ResultSet rs = stmt.executeQuery(sql);
+			while(rs.next()) {
+				int id = rs.getInt("id");
+				String category = rs.getString("category");
+				String title = rs.getString("title");
+				String description = rs.getString("memo");
+				String due_date = rs.getString("due_date");
+				String current_date =rs.getString("current_date");
+				
+				TodoItem t = new TodoItem(title, description, category, due_date);
+				t.setId(id);
+				t.setCurrent_date(current_date);
+				list.add(t);
+			}
+			stmt.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return list;
+	}
+	
+	public ArrayList<TodoItem> getList(String keyword) {
+		ArrayList<TodoItem> list = new ArrayList<TodoItem>();
+		PreparedStatement pstmt;
+		keyword = "%"+keyword+"%";
+		
+		try {
+			String sql = "SELECT * FROM list WHERE titie like ? or memo like?";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1,keyword);
+			pstmt.setString(2,keyword);
+			ResultSet rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				int id = rs.getInt("id");
+				String category = rs.getString("category");
+				String title = rs.getString("title");
+				String description = rs.getString("memo");
+				String due_date = rs.getString("due_date");
+				String current_date =rs.getString("current_date");
+			
+				TodoItem t = new TodoItem(title, description, category, due_date);
+				t.setId(id);
+				t.setCurrent_date(current_date);
+				list.add(t);
+			}
+			pstmt.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return list;
 	}
 	
 	public ArrayList<String> getCategories() {
@@ -210,10 +249,18 @@ public class TodoList {
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1,keyword);
 			ResultSet rs = pstmt.executeQuery();
-			
-			while (rs.next()) {
-				list.add(new TodoItem(rs.getInt("id"), rs.getString("category"), rs.getString("title"),
-						rs.getString("memo"), rs.getString("due_date"), rs.getString("current_date")));
+			while(rs.next()) {
+				int id = rs.getInt("id");
+				String category = rs.getString("category");
+				String title = rs.getString("title");
+				String description = rs.getString("memo");
+				String due_date = rs.getString("due_date");
+				String current_date =rs.getString("current_date");
+	
+				TodoItem t = new TodoItem(title, description, category, due_date);
+				t.setId(id);
+				t.setCurrent_date(current_date);
+				list.add(t);
 			}
 			pstmt.close();
 		} catch (SQLException e) {
@@ -233,9 +280,18 @@ public class TodoList {
 				sql += " desc";
 			ResultSet rs = stmt.executeQuery(sql);
 			
-			while (rs.next()) {
-				list.add(new TodoItem(rs.getInt("id"), rs.getString("category"), rs.getString("title"),
-						rs.getString("memo"), rs.getString("due_date"), rs.getString("current_date")));
+			while(rs.next()) {
+				int id = rs.getInt("id");
+				String category = rs.getString("category");
+				String title = rs.getString("title");
+				String description = rs.getString("memo");
+				String due_date = rs.getString("due_date");
+				String current_date =rs.getString("current_date");
+
+				TodoItem t = new TodoItem(title, description, category, due_date);
+				t.setId(id);
+				t.setCurrent_date(current_date);
+				list.add(t);
 			}
 			stmt.close();
 		} catch (SQLException e) {
