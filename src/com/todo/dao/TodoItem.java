@@ -10,34 +10,38 @@ public class TodoItem {
     private String desc;
     private String due_date;
     private String current_date;
+    private String is_completed = "0"; //default는 0으로 초기화
     
-    public TodoItem(String title, String desc, String category,String due_date){
+    public TodoItem(String title, String desc, String category, String due_date, String is_completed){
     	this.category=category;
     	this.title=title;
         this.desc=desc;
         this.due_date = due_date;
         SimpleDateFormat f = new SimpleDateFormat("yyyy/MM/dd kk:mm:ss");
         this.current_date = f.format(new Date());
+        this.is_completed = is_completed;
     } //Constructor1
     
-    public TodoItem (String title, String desc, String category, String due_date, String current_date) {
+    public TodoItem(String title, String desc, String category, String due_date, String current_date, String is_completed) {
     	this.category = category;
     	this.title = title;
 		this.desc = desc;
 		this.due_date = due_date;
 		this.current_date = current_date;
+		this.is_completed = is_completed;
 	} //Constructor2
     
-    public TodoItem(int id, String title, String desc,String category, String due_date, String current_date) {
+    public TodoItem(int id, String title, String desc,String category, String due_date, String current_date, String is_completed) {
 		this.id = id;
 		this.category = category;
 		this.title = title;
 		this.desc = desc;
 		this.due_date = due_date;
 		this.current_date = current_date;
+		this.is_completed = is_completed;
 	} //Constructor3
-    
-    public int getId() {
+
+	public int getId() {
 		return id;
 	}
     
@@ -84,13 +88,29 @@ public class TodoItem {
 	public void setCurrent_date(String current_date) {
 		this.current_date = current_date;
 	}
+	
+	public String getIs_completed() {
+		return is_completed;
+	}
 
+	public void setIs_completed(String is_completed) {
+		this.is_completed = is_completed;
+	}	
+	
 	@Override
     public String toString() {
-		return String.format("%d [%s] %s - %s - %s - %s", id, category, title, desc, due_date, current_date);
+		if(is_completed.equals("1")) {
+			return String.format("%d [%s] %s[V] - %s - %s - %s", id, category, title, desc, due_date, current_date);
+		}
+		else if(is_completed.equals("0")){
+			return String.format("%d [%s] %s - %s - %s - %s", id, category, title, desc, due_date, current_date);
+		}
+		else { 
+			return "";
+		}
     }
     
     public String toSaveString() {
-    	return category + "##" + title + "##" + desc + "##" + due_date + "##" + current_date + "\n";
+    	return category + "##" + title + "##" + desc + "##" + due_date + "##" + current_date + "##" + is_completed + "\n";
     }
 }

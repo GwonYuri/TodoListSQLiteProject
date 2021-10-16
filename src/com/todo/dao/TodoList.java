@@ -26,7 +26,7 @@ public class TodoList {
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(filename));
 			String line;
-			String sql = "insert into list (title, memo, category, current_date, due_date)" +"values (?,?,?,?,?);";
+			String sql = "insert into list (title, memo, category, current_date, due_date, is_completed)" +"values (?,?,?,?,?,?);";
 			
 			int records = 0;
 			while((line = br.readLine()) != null) {
@@ -36,6 +36,7 @@ public class TodoList {
 				String description = st.nextToken();
 				String due_date = st.nextToken();
 				String current_date = st.nextToken();
+				String is_completed = st.nextToken();
 				
 				PreparedStatement pstmt = conn.prepareStatement(sql);
 				pstmt.setString(1, title);
@@ -43,12 +44,13 @@ public class TodoList {
 				pstmt.setString(3, category);
 				pstmt.setString(4, current_date);
 				pstmt.setString(5, due_date);
+				pstmt.setString(6, is_completed);
 				
 				int count = pstmt.executeUpdate();
 				if(count > 0) records++;
 				pstmt.close();
 			}
-			System.out.println(records + " records read!!");
+			System.out.println("총 " + records + "개의 항목을 읽었습니다.");
 			br.close();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -56,7 +58,7 @@ public class TodoList {
 	}
 	
 	public int addItem(TodoItem t) {
-		String sql = "insert into list (title, memo, category, current_date, due_date)" +"values (?,?,?,?,?);";
+		String sql = "insert into list (title, memo, category, current_date, due_date, is_completed)" +"values (?,?,?,?,?,?);";
 		PreparedStatement pstmt;
 		
 		int count = 0;
@@ -67,6 +69,30 @@ public class TodoList {
 			pstmt.setString(3, t.getCategory());
 			pstmt.setString(4, t.getCurrent_date());
 			pstmt.setString(5, t.getDue_date());
+			pstmt.setString(6, t.getIs_completed());
+			
+			count = pstmt.executeUpdate();
+			pstmt.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return count;
+	}
+
+	public int updateItem(TodoItem t) {
+		String sql = "update list set title=?, memo=?, category=?, current_date=?, due_date=?, is_completed=?" + " where id = ?;";
+		PreparedStatement pstmt;
+		
+		int count = 0;
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1,t.getTitle());
+			pstmt.setString(2,t.getDesc());
+			pstmt.setString(3,t.getCategory());
+			pstmt.setString(4,t.getCurrent_date());
+			pstmt.setString(5,t.getDue_date());
+			pstmt.setString(6, t.getIs_completed());
+			pstmt.setInt(7, t.getId());
 			
 			count = pstmt.executeUpdate();
 			pstmt.close();
@@ -91,20 +117,16 @@ public class TodoList {
 		}
 		return count;
 	}
-
-	public int updateItem(TodoItem t) {
-		String sql = "update list set title=?, memo=?, category=?, current_date=?, due_date=?" + " where id = ?;";
+	
+	public int completeItem(int comp_num) {
+		String sql = "update list set is_completed=?" + " where id = ?;";
 		PreparedStatement pstmt;
 		
 		int count = 0;
 		try {
 			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1,t.getTitle());
-			pstmt.setString(2,t.getDesc());
-			pstmt.setString(3,t.getCategory());
-			pstmt.setString(4,t.getCurrent_date());
-			pstmt.setString(5,t.getDue_date());
-			pstmt.setInt(6, t.getId());
+			pstmt.setString(1, "1");
+			pstmt.setInt(2,comp_num);
 			
 			count = pstmt.executeUpdate();
 			pstmt.close();
@@ -112,10 +134,6 @@ public class TodoList {
 			e.printStackTrace();
 		}
 		return count;
-	}
-
-	public void sortByName() {
-		Collections.sort(list, new TodoSortByName());
 	}
 	
 	public void listAll() {
@@ -128,7 +146,11 @@ public class TodoList {
 	public void reverseList() {
 		Collections.reverse(list);
 	}
-
+	
+	public void sortByName() {
+		Collections.sort(list, new TodoSortByName());
+	}
+	
 	public void sortByDate() {
 		Collections.sort(list, new TodoSortByDate());
 	}
@@ -161,6 +183,44 @@ public class TodoList {
 		return count;
 	}
 	
+	public ArrayList<String> getCategories() {
+		ArrayList<String> list = new ArrayList<String>();
+		Statement stmt;
+		
+		try {
+			stmt = conn.createStatement();
+			String sql = "SELECT DISTINCT category FROM list";
+			ResultSet rs = stmt.executeQuery(sql);
+			
+			while(rs.next()) {
+				String category = rs.getString("category");
+				list.add(category);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return list;
+	}
+	
+	public ArrayList<String> getComplete() {
+		ArrayList<String> list = new ArrayList<String>();
+		Statement stmt;
+		
+		try {
+			stmt = conn.createStatement();
+			String sql = "SELECT DISTINCT is_completed FROM list";
+			ResultSet rs = stmt.executeQuery(sql);
+			
+			while(rs.next()) {
+				String is_completed = rs.getString("is_completed");
+				list.add(is_completed);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return list;
+	}
+	
 	public ArrayList<TodoItem> getList() {
 		ArrayList<TodoItem> list = new ArrayList<TodoItem>();
 		Statement stmt;
@@ -176,8 +236,9 @@ public class TodoList {
 				String description = rs.getString("memo");
 				String due_date = rs.getString("due_date");
 				String current_date =rs.getString("current_date");
+				String is_completed = rs.getString("is_completed");
 				
-				TodoItem t = new TodoItem(title, description, category, due_date);
+				TodoItem t = new TodoItem(title, description, category, due_date, is_completed);
 				t.setId(id);
 				t.setCurrent_date(current_date);
 				list.add(t);
@@ -208,32 +269,14 @@ public class TodoList {
 				String description = rs.getString("memo");
 				String due_date = rs.getString("due_date");
 				String current_date =rs.getString("current_date");
-			
-				TodoItem t = new TodoItem(title, description, category, due_date);
+				String is_completed = rs.getString("is_completed");
+				
+				TodoItem t = new TodoItem(title, description, category, due_date, is_completed);
 				t.setId(id);
 				t.setCurrent_date(current_date);
 				list.add(t);
 			}
 			pstmt.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return list;
-	}
-	
-	public ArrayList<String> getCategories() {
-		ArrayList<String> list = new ArrayList<String>();
-		Statement stmt;
-		
-		try {
-			stmt = conn.createStatement();
-			String sql = "SELECT DISTINCT category FROM list";
-			ResultSet rs = stmt.executeQuery(sql);
-			
-			while(rs.next()) {
-				String category = rs.getString("category");
-				list.add(category);
-			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -256,8 +299,9 @@ public class TodoList {
 				String description = rs.getString("memo");
 				String due_date = rs.getString("due_date");
 				String current_date =rs.getString("current_date");
-	
-				TodoItem t = new TodoItem(title, description, category, due_date);
+				String is_completed = rs.getString("is_completed");
+				
+				TodoItem t = new TodoItem(title, description, category, due_date, is_completed);
 				t.setId(id);
 				t.setCurrent_date(current_date);
 				list.add(t);
@@ -287,8 +331,9 @@ public class TodoList {
 				String description = rs.getString("memo");
 				String due_date = rs.getString("due_date");
 				String current_date =rs.getString("current_date");
-
-				TodoItem t = new TodoItem(title, description, category, due_date);
+				String is_completed = rs.getString("is_completed");
+				
+				TodoItem t = new TodoItem(title, description, category, due_date, is_completed);
 				t.setId(id);
 				t.setCurrent_date(current_date);
 				list.add(t);
@@ -298,6 +343,5 @@ public class TodoList {
 			e.printStackTrace();
 		}
 		return list;
-	}
-	
+	}	
 }

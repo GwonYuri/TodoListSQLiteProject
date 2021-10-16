@@ -24,27 +24,25 @@ public class TodoMain {
 			case "add":
 				TodoUtil.createItem(l);
 				break;
-			
-			case "del":
-				TodoUtil.deleteItem(l);
-				break;
 				
 			case "edit":
 				TodoUtil.updateItem(l);
 				break;
+				
+			case "del":
+				TodoUtil.deleteItem(l);
+				break;	
 				
 			case "ls":
 				TodoUtil.listAll(l);
 				break;
 
 			case "ls_name":
-				// 오름차순 정렬
 				System.out.println("제목순으로 정렬하였습니다.");
 				TodoUtil.listAll(l, "title", 1);
 				break;
 
 			case "ls_name_desc":
-				//내림차순 정렬
 				System.out.println("제목역순으로 정렬하였습니다.");
 				TodoUtil.listAll(l, "title", 0);
 				break;
@@ -71,6 +69,15 @@ public class TodoMain {
 			case "find_cate":
 				String cate_keyward = sc.next();
 				TodoUtil.findByCategory(l, cate_keyward);
+				break;
+				
+			case "comp":
+				int comp_num = sc.nextInt();
+				TodoUtil.completeItem(l, comp_num);
+				break;
+				
+			case "ls_comp":
+				TodoUtil.completeListAll(l);
 				break;
 				
 			case "help":
