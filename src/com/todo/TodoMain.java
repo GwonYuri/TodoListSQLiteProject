@@ -79,7 +79,25 @@ public class TodoMain {
 			case "ls_comp":
 				TodoUtil.completeListAll(l);
 				break;
+			
+			case "late":
+				int late_num = sc.nextInt();
+				TodoUtil.lateItem(l, late_num);
+				break;
 				
+			case "ls_late":
+				TodoUtil.lateListAll(l);
+				break;
+			
+			case "important":
+				int imp_num = sc.nextInt();
+				TodoUtil.importantItem(l, imp_num);
+				break;
+				
+			case "ls_important":
+				TodoUtil.importantListAll(l);
+				break;
+			
 			case "help":
 				Menu.displaymenu();
 				break;

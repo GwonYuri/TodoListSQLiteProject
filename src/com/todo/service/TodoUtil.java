@@ -15,7 +15,7 @@ public class TodoUtil {
 	
 	public static void createItem(TodoList list) {
 		
-		String category, title, desc, due_date, is_completed;;
+		String category, title, desc, due_date, is_completed, is_lated, is_important;
 		Scanner sc = new Scanner(System.in);
 		
 		System.out.print("[항목 추가]\n" + "카테고리 > ");
@@ -38,7 +38,13 @@ public class TodoUtil {
 		System.out.print("완료 여부(0: 미완료, 1: 완료) > ");
 		is_completed = sc.next();
 		
-		TodoItem t = new TodoItem(title, desc, category, due_date, is_completed);
+		System.out.print("지각 여부(0: 지각 아님, 1: 지각함) > ");
+		is_lated = sc.next();
+		
+		System.out.print("중요성 여부(0: 중요하지 않음, 1: 중요함) > ");
+		is_important = sc.next();
+		
+		TodoItem t = new TodoItem(title, desc, category, due_date, is_completed, is_lated, is_important);
 		if(list.addItem(t) > 0) {
 			System.out.println("항목이 추가되었습니다.");
 		}
@@ -46,16 +52,18 @@ public class TodoUtil {
 
 	public static void updateItem(TodoList l) {
 		
+		int upd_num;
+		String new_category, new_title, new_description, new_duedate, is_completed, is_lated, is_important;
 		Scanner sc = new Scanner(System.in);
 		
 		System.out.print("[항목 수정]\n" + "수정할 항목 번호 > ");
-		int upd_num = sc.nextInt();
+		upd_num = sc.nextInt();
 
 		System.out.print("카테고리 > ");
-		String new_category = sc.next().trim();
+		new_category = sc.next().trim();
 		
 		System.out.print("새로운 제목 > ");
-		String new_title = sc.next().trim(); // 제목은 한단어 입력받음
+		new_title = sc.next().trim(); // 제목은 한단어 입력받음
 		if (l.isDuplicate(new_title)) {
 			System.out.println("제목이 중복됩니다.");
 			return;
@@ -63,15 +71,21 @@ public class TodoUtil {
 		
 		sc.nextLine(); 
 		System.out.print("새로운 내용 > ");
-		String new_description = sc.nextLine().trim(); // 내용은 한문장 전체를 입력받음
+		new_description = sc.nextLine().trim(); // 내용은 한문장 전체를 입력받음
 		
 		System.out.print("새로운 마감일 > ");
-		String new_duedate = sc.nextLine().trim(); 
+		new_duedate = sc.nextLine().trim(); 
 		
 		System.out.print("완료 여부(0: 미완료, 1: 완료) > ");
-		String is_completed = sc.next();
+		is_completed = sc.next();
 		
-		TodoItem t = new TodoItem(new_title, new_description, new_category, new_duedate, is_completed);
+		System.out.print("지각 여부(0: 지각 아님, 1: 지각함) > ");
+		is_lated = sc.next();
+		
+		System.out.print("중요성 여부(0: 중요하지 않음, 1: 중요함) > ");
+		is_important = sc.next();
+		
+		TodoItem t = new TodoItem(new_title, new_description, new_category, new_duedate, is_completed, is_lated, is_important);
 		t.setId(upd_num);
 		if(l.updateItem(t) > 0)
 			System.out.println("항목이 수정되었습니다.");
@@ -117,8 +131,10 @@ public class TodoUtil {
 					String due_date = st.nextToken();
 					String current_date = st.nextToken();
 					String is_completed = st.nextToken();
+					String is_lated = st.nextToken();
+					String is_important = st.nextToken();
 					
-					TodoItem i = new TodoItem(title, desc, category, due_date, is_completed);
+					TodoItem i = new TodoItem(title, desc, category, due_date, is_completed, is_lated, is_important);
 					l.addItem(i);
 					count++;
 				}
@@ -184,14 +200,47 @@ public class TodoUtil {
 	public static void completeListAll(TodoList l) {
 		int count = 0;
 		
-		for(TodoItem item : l.getList()) {
-			String completed = item.getIs_completed();
-			if(completed.equals("1")) {
-				System.out.println(item.toString());
+		for(TodoItem i : l.getList()) {
+			if(i.getIs_completed().equals("1")) {
+				System.out.println(i.toString());
 				count++;
 			}
 		}
 		System.out.println("총 " + count + "개의 항목을 완료했습니다.");
+	}
+	
+	public static void lateItem(TodoList l, int number) {
+		if(l.lateItem(number) > 0)
+			System.out.println("지각한 항목으로 체크하였습니다.");
+	}
+	
+	public static void lateListAll(TodoList l) {
+		int count = 0;
+		
+		for(TodoItem i : l.getList()) {
+			if(i.getIs_lated().equals("1")) {
+				System.out.println(i.toString());
+				count++;
+			}
+		}
+		System.out.println("총 " + count + "개의 항목이 지각했습니다.");
+	}
+	
+	public static void importantItem(TodoList l, int number) {
+		if(l.importantItem(number) > 0)
+			System.out.println("중요한 항목으로 체크하였습니다.");
+	}
+	
+	public static void importantListAll(TodoList l) {
+		int count = 0;
+		
+		for(TodoItem i : l.getList()) {
+			if(i.getIs_important().equals("1")) {
+				System.out.println(i.toString());
+				count++;
+			}
+		}
+		System.out.println("총 " + count + "개의 항목이 중요합니다.");
 	}
 	
 }

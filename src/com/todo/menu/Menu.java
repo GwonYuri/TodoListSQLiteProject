@@ -18,6 +18,10 @@ public class Menu {
         System.out.println("find_cate <keyword> - 해당 카테고리 키워드를 포함하고 있는 모든 항목 출력");
         System.out.println("comp - 완료된 항목으로 체크");
         System.out.println("ls_comp - 완료된 항목 목록 출력");
+        System.out.println("late - 지각한 항목으로 체크");
+        System.out.println("ls_late - 지각한 항목 목록 출력");
+        System.out.println("important - 중요한 항목으로 체크");
+        System.out.println("ls_important - 중요한 항목 목록 출력");
         System.out.println("exit - 종료");
     }
     
